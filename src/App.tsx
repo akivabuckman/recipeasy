@@ -184,6 +184,7 @@ export default function App() {
             )}
           </button>
         </div>
+        <p className="mb-4 text-zinc-500 dark:text-zinc-400">🥳 Yay! Now any recipe from any website can be super easy to use!</p>
         <p className="mb-4 text-zinc-500 dark:text-zinc-400">Enter a URL 🔗 or paste recipe text 📋 below:</p>
         <UrlForm
           url={url}
