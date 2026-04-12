@@ -1,51 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import type { RecipeResponse } from './types';
 import UrlForm from './components/UrlForm';
 import RecipeTextArea from './components/RecipeTextArea';
 import RecipeView from './components/RecipeView';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const API_URL = 'https://mypxpcpfw8.execute-api.ap-southeast-1.amazonaws.com/prod/scrape';
 
-const SKELETON_INGREDIENT_WIDTHS = ['w-2/5', 'w-3/5', 'w-1/2', 'w-2/3', 'w-3/4', 'w-2/5'];
-const SKELETON_INSTRUCTION_WIDTHS = [['w-full', 'w-4/5'], ['w-full', 'w-3/5'], ['w-full', 'w-2/3']];
-
-function RecipeSkeleton() {
+function RecipeLoader() {
   return (
-    <div className="mt-10 space-y-10 animate-pulse">
-      <p className="text-center text-zinc-400 dark:text-zinc-500 text-sm">🍳 Cooking up your recipe...</p>
-      <section>
-        <div className="flex items-center justify-between mb-3">
-          <div className="h-6 w-36 bg-zinc-200 dark:bg-zinc-700 rounded" />
-          <div className="h-6 w-24 bg-zinc-200 dark:bg-zinc-700 rounded" />
-        </div>
-        <ul className="bg-zinc-100 dark:bg-zinc-800/50 rounded-lg px-4">
-          {SKELETON_INGREDIENT_WIDTHS.map((w, i) => (
-            <li key={i} className="flex items-center gap-3 py-2.5 border-b border-zinc-200 dark:border-zinc-800 last:border-0">
-              <div className="w-4 h-4 rounded bg-zinc-300 dark:bg-zinc-700 shrink-0" />
-              <div className={`h-3.5 bg-zinc-300 dark:bg-zinc-700 rounded flex-1 ${w}`} />
-              <div className="w-16 h-7 bg-zinc-300 dark:bg-zinc-700 rounded" />
-              <div className="w-16 h-7 bg-zinc-300 dark:bg-zinc-700 rounded" />
-            </li>
-          ))}
-        </ul>
-      </section>
-      <section>
-        <div className="h-6 w-40 bg-zinc-200 dark:bg-zinc-700 rounded mb-3" />
-        <ol className="bg-zinc-100 dark:bg-zinc-800/50 rounded-lg px-4">
-          {SKELETON_INSTRUCTION_WIDTHS.map((lines, i) => (
-            <li key={i} className="flex gap-3 py-3 border-b border-zinc-200 dark:border-zinc-800 last:border-0">
-              <div className="w-4 h-4 mt-0.5 rounded bg-zinc-300 dark:bg-zinc-700 shrink-0" />
-              <div className="w-5 h-4 mt-0.5 bg-zinc-300 dark:bg-zinc-700 rounded shrink-0" />
-              <div className="flex-1 space-y-2">
-                {lines.map((lw, j) => (
-                  <div key={j} className={`h-3.5 bg-zinc-300 dark:bg-zinc-700 rounded ${lw}`} />
-                ))}
-              </div>
-            </li>
-          ))}
-        </ol>
-      </section>
+    <div className="mt-16 flex flex-col items-center gap-5">
+      <CircularProgress aria-label="Loading…" />
+      <p className="text-zinc-400 dark:text-zinc-500 text-sm">🍳 Cooking up your recipe...</p>
     </div>
   );
 }
@@ -57,6 +24,7 @@ export default function App() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
   const [url, setUrl] = useState<string>('');
+  const [urlSubmitted, setUrlSubmitted] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [errorFromUrl, setErrorFromUrl] = useState<boolean>(false);
@@ -66,11 +34,19 @@ export default function App() {
   const [checkedIngredients, setCheckedIngredients] = useState<Set<string>>(new Set());
   const [checkedInstructions, setCheckedInstructions] = useState<Set<number>>(new Set());
   const [recipeText, setRecipeText] = useState<string>('');
+  const [textSubmitted, setTextSubmitted] = useState<boolean>(false);
+  const recipeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
   }, [isDark]);
+
+  useEffect(() => {
+    if (!loading && baseRecipe && recipeRef.current) {
+      recipeRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [loading, baseRecipe]);
 
   const resetState = () => {
     setError(null);
@@ -84,26 +60,32 @@ export default function App() {
 
   const handleSubmit = async () => {
     if (!url.trim()) return;
+    setUrlSubmitted(true);
     setLoading(true);
     resetState();
     setRecipeText('');
 
     try {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mode: 'scrape', url: url.trim() }),
-      });
-      const data = await res.json() as RecipeResponse | { error: string };
-      if (!res.ok) {
+      // const res = await fetch(API_URL, {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ mode: 'scrape', url: url.trim() }),
+      // });
+      // const data = await res.json() as RecipeResponse | { error: string };
+      const data = {"ingredients": {"olive oil": {"unit": "tbsp", "count": 2.0}, "sausage": {"unit": "lb", "count": 1.0}, "eggplant": {"unit": "lb", "count": 1.0}, "red onion": {"unit": "whole", "count": 1.0}, "kosher salt": {"unit": null, "count": null}, "black pepper": {"unit": null, "count": null}, "tomato sauce": {"unit": "oz", "count": 24.0}, "oregano": {"unit": null, "count": null}, "red pepper flake": {"unit": null, "count": null}, "garlic clove": {"unit": "clove", "count": 2.0}, "dried pasta": {"unit": "lb", "count": 1.0}, "basil": {"unit": null, "count": null}, "pecorino cheese": {"unit": null, "count": null}}, "instructions": []}
+
+      // if (!res.ok) {
+      if (false) {
         setError("We couldn't read the recipe from that page. Some websites block this kind of access.");
         setErrorFromUrl(true);
+        setUrlSubmitted(false);
       } else {
         setBaseRecipe(data as RecipeResponse);
       }
     } catch {
       setError("Couldn't reach the server — check your internet connection and try again.");
       setErrorFromUrl(true);
+      setUrlSubmitted(false);
     } finally {
       setLoading(false);
     }
@@ -111,6 +93,7 @@ export default function App() {
 
   const handleConvert = async () => {
     if (!recipeText.trim()) return;
+    setTextSubmitted(true);
     setLoading(true);
     resetState();
     setUrl('');
@@ -124,11 +107,13 @@ export default function App() {
       const data = await res.json() as RecipeResponse | { error: string };
       if (!res.ok) {
         setError("Something went wrong while processing your recipe. Make sure it contains ingredients and instructions, then try again.");
+        setTextSubmitted(false);
       } else {
         setBaseRecipe(data as RecipeResponse);
       }
     } catch {
       setError("Couldn't reach the server — check your internet connection and try again.");
+      setTextSubmitted(false);
     } finally {
       setLoading(false);
     }
@@ -163,7 +148,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white text-zinc-900 dark:bg-zinc-900 dark:text-white">
-      <div className="max-w-3xl mx-auto px-4 py-12">
+      <div className="max-w-3xl mx-auto px-4 py-24">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">
             🍳 <span className="bg-gradient-to-r from-green-500 to-emerald-400 bg-clip-text text-transparent">Recipeasy</span>
@@ -188,9 +173,10 @@ export default function App() {
         <p className="mb-4 text-zinc-500 dark:text-zinc-400">Enter a URL 🔗 or paste recipe text 📋 below:</p>
         <UrlForm
           url={url}
-          onUrlChange={setUrl}
+          onUrlChange={(val) => { setUrl(val); setUrlSubmitted(false); }}
           onSubmit={handleSubmit}
           loading={loading}
+          submitted={urlSubmitted}
         />
         <div className="flex items-center gap-4 my-5">
           <div className="flex-1 border-t border-zinc-200 dark:border-zinc-700" />
@@ -199,9 +185,10 @@ export default function App() {
         </div>
         <RecipeTextArea
           value={recipeText}
-          onChange={setRecipeText}
+          onChange={(val) => { setRecipeText(val); setTextSubmitted(false); }}
           onSubmit={handleConvert}
           loading={loading}
+          submitted={textSubmitted}
         />
         {error && (
           <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/40 border border-red-300 dark:border-red-700 rounded-lg text-sm space-y-2">
@@ -213,9 +200,10 @@ export default function App() {
             )}
           </div>
         )}
-        {loading && <RecipeSkeleton />}
+        {loading && <RecipeLoader />}
         {!loading && baseRecipe && (
           <RecipeView
+            ref={recipeRef}
             baseRecipe={baseRecipe}
             scaleFactor={scaleFactor}
             onScaleChange={setScaleFactor}

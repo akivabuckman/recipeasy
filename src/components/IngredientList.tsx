@@ -136,21 +136,25 @@ export default function IngredientList({
           Reset quantites
         </button>
       </div>
-      <ul className="bg-zinc-100 dark:bg-zinc-800/50 rounded-lg px-4">
-        {Object.entries(baseIngredients).map(([name, detail]) => (
-          <IngredientRow
-            key={name}
-            name={name}
-            baseDetail={detail}
-            scaleFactor={scaleFactor}
-            onScaleChange={onScaleChange}
-            unitOverride={unitOverrides[name] ?? null}
-            onUnitChange={onUnitChange}
-            checked={checkedIngredients.has(name)}
-            onToggle={() => onToggleIngredient(name)}
-          />
-        ))}
-      </ul>
+      {Object.keys(baseIngredients).length === 0 ? (
+        <p className="text-zinc-500 dark:text-zinc-400 text-sm">No ingredients were found in this recipe.</p>
+      ) : (
+        <ul className="bg-zinc-100 dark:bg-zinc-800/50 rounded-lg px-4">
+          {Object.entries(baseIngredients).map(([name, detail]) => (
+            <IngredientRow
+              key={name}
+              name={name}
+              baseDetail={detail}
+              scaleFactor={scaleFactor}
+              onScaleChange={onScaleChange}
+              unitOverride={unitOverrides[name] ?? null}
+              onUnitChange={onUnitChange}
+              checked={checkedIngredients.has(name)}
+              onToggle={() => onToggleIngredient(name)}
+            />
+          ))}
+        </ul>
+      )}
     </section>
   );
 }

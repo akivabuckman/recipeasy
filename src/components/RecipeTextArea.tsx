@@ -3,9 +3,10 @@ interface RecipeTextAreaProps {
   onChange: (value: string) => void;
   onSubmit: () => void;
   loading: boolean;
+  submitted: boolean;
 }
 
-export default function RecipeTextArea({ value, onChange, onSubmit, loading }: RecipeTextAreaProps) {
+export default function RecipeTextArea({ value, onChange, onSubmit, loading, submitted }: RecipeTextAreaProps) {
   return (
     <div>
       <textarea
@@ -17,7 +18,7 @@ export default function RecipeTextArea({ value, onChange, onSubmit, loading }: R
       />
       <button
         onClick={onSubmit}
-        disabled={loading || !value.trim()}
+        disabled={loading || !value.trim() || submitted}
         className="mt-2 w-full py-2.5 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
         {loading ? '✨ Doing AI stuff...' : 'Convert! 🪄'}

@@ -32,17 +32,21 @@ export default function InstructionList({ instructions, checkedInstructions, onT
   return (
     <section>
       <h2 className="text-xl font-semibold mb-3">👨‍🍳 Instructions</h2>
-      <ol className="bg-zinc-100 dark:bg-zinc-800/50 rounded-lg px-4">
-        {instructions.map((text, index) => (
-          <InstructionItem
-            key={index}
-            index={index}
-            text={text}
-            checked={checkedInstructions.has(index)}
-            onToggle={() => onToggleInstruction(index)}
-          />
-        ))}
-      </ol>
+      {instructions.length === 0 ? (
+        <p className="text-zinc-500 dark:text-zinc-400 text-sm">No instructions were found in this recipe.</p>
+      ) : (
+        <ol className="bg-zinc-100 dark:bg-zinc-800/50 rounded-lg px-4">
+          {instructions.map((text, index) => (
+            <InstructionItem
+              key={index}
+              index={index}
+              text={text}
+              checked={checkedInstructions.has(index)}
+              onToggle={() => onToggleInstruction(index)}
+            />
+          ))}
+        </ol>
+      )}
     </section>
   );
 }
