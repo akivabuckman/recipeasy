@@ -314,16 +314,35 @@ def lambda_handler(event: dict, context) -> dict:
         except (json.JSONDecodeError, TypeError):
             return make_response(400, {"error": "Invalid JSON body"})
 
+    mode = event.get("mode")
+    if mode not in ("scrape", "convert"):
+        return make_response(400, {"error": "Missing or invalid 'mode' field — must be 'scrape' or 'convert'"})
+
     url = event.get("url")
+    recipe_text = event.get("recipe")
 
-    if not url or not isinstance(url, str):
-        return make_response(400, {"error": "Missing or invalid 'url' field in request"})
+    has_url = bool(url and isinstance(url, str))
+    has_recipe = bool(recipe_text and isinstance(recipe_text, str))
 
-    if not re.match(r"^https?://", url):
-        return make_response(400, {"error": "URL must start with http:// or https://"})
+    if mode == "scrape":
+        if has_recipe:
+            return make_response(400, {"error": "'recipe' must not be provided in scrape mode — use 'url' instead"})
+        if not has_url:
+            return make_response(400, {"error": "Missing 'url' field in scrape mode"})
+        if not re.match(r"^https?://", url):
+            return make_response(400, {"error": "URL must start with http:// or https://"})
+    else:  # convert
+        if has_url:
+            return make_response(400, {"error": "'url' must not be provided in convert mode — use 'recipe' instead"})
+        if not has_recipe:
+            return make_response(400, {"error": "Missing 'recipe' field in convert mode"})
 
     try:
-        page_text = scrape_url(url)
+        if mode == "scrape":
+            page_text = scrape_url(url)
+        else:
+            page_text = recipe_text
+
         recipe = extract_recipe(page_text)
         return make_response(200, serialize_recipe(recipe))
     except requests.HTTPError as e:
