@@ -39,6 +39,7 @@ jobs:
         run: |
           docker build \
             --build-arg GIT_SHA=$GIT_SHA \
+            --build-arg VITE_API_URL=${{ secrets.API_URL }} \
             -t recipeasy:$GIT_SHA .
 
       - name: Tag Docker image for ECR
