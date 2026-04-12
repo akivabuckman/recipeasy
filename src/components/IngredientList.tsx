@@ -70,11 +70,12 @@ function IngredientRow({
   };
 
   return (
-    <li className={`flex items-center gap-3 py-2.5 border-b border-zinc-200 dark:border-zinc-800 last:border-0 ${checked ? 'opacity-50' : ''}`}>
+    <li onClick={onToggle} className={`flex items-center gap-3 py-2.5 border-b border-zinc-200 dark:border-zinc-800 last:border-0 cursor-pointer select-none ${checked ? 'opacity-50' : ''}`}>
       <input
         type="checkbox"
         checked={checked}
         onChange={onToggle}
+        onClick={(e) => e.stopPropagation()}
         className="w-4 h-4 shrink-0 accent-green-500 cursor-pointer"
       />
       <span className={`flex-1 text-sm capitalize ${checked ? 'line-through text-zinc-400 dark:text-zinc-500' : 'text-zinc-900 dark:text-white'}`}>
@@ -87,6 +88,7 @@ function IngredientRow({
               type="number"
               value={inputValue}
               onChange={handleCountChange}
+              onClick={(e) => e.stopPropagation()}
               onFocus={() => { isFocusedRef.current = true; }}
               onBlur={() => { isFocusedRef.current = false; }}
               min={0}
@@ -100,6 +102,7 @@ function IngredientRow({
             <select
               value={currentUnit ?? ''}
               onChange={(e) => onUnitChange(name, e.target.value)}
+              onClick={(e) => e.stopPropagation()}
               className="w-full bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded px-1.5 py-1 text-sm text-zinc-600 dark:text-zinc-300 focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-500"
             >
               {availableUnits.map((u) => (

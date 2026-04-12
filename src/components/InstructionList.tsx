@@ -13,11 +13,12 @@ interface InstructionItemProps {
 
 function InstructionItem({ index, text, checked, onToggle }: InstructionItemProps) {
   return (
-    <li className={`flex gap-3 py-3 border-b border-zinc-200 dark:border-zinc-800 last:border-0 ${checked ? 'opacity-50' : ''}`}>
+    <li onClick={onToggle} className={`flex gap-3 py-3 border-b border-zinc-200 dark:border-zinc-800 last:border-0 cursor-pointer select-none ${checked ? 'opacity-50' : ''}`}>
       <input
         type="checkbox"
         checked={checked}
         onChange={onToggle}
+        onClick={(e) => e.stopPropagation()}
         className="w-4 h-4 mt-0.5 shrink-0 accent-green-500 cursor-pointer"
       />
       <span className="text-green-500 font-semibold text-sm shrink-0 mt-0.5 w-5 text-right">{index + 1}.</span>
