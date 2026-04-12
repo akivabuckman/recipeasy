@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import type { RecipeResponse } from '../types';
 import IngredientList from './IngredientList';
 import InstructionList from './InstructionList';
@@ -15,7 +16,7 @@ interface RecipeViewProps {
   onToggleInstruction: (index: number) => void;
 }
 
-export default function RecipeView({
+const RecipeView = forwardRef<HTMLDivElement, RecipeViewProps>(function RecipeView({
   baseRecipe,
   scaleFactor,
   onScaleChange,
@@ -26,9 +27,9 @@ export default function RecipeView({
   checkedInstructions,
   onToggleIngredient,
   onToggleInstruction,
-}: RecipeViewProps) {
+}, ref) {
   return (
-    <div className="mt-10 space-y-10">
+    <div ref={ref} className="mt-10 space-y-10">
       <IngredientList
         baseIngredients={baseRecipe.ingredients}
         scaleFactor={scaleFactor}
@@ -46,4 +47,6 @@ export default function RecipeView({
       />
     </div>
   );
-}
+});
+
+export default RecipeView;
