@@ -5,7 +5,10 @@ import InstructionList from './InstructionList';
 interface RecipeViewProps {
   baseRecipe: RecipeResponse;
   scaleFactor: number;
-  onIngredientChange: (name: string, newCount: number) => void;
+  onScaleChange: (newScale: number) => void;
+  unitOverrides: Record<string, string>;
+  onUnitChange: (name: string, newUnit: string) => void;
+  onReset: () => void;
   checkedIngredients: Set<string>;
   checkedInstructions: Set<number>;
   onToggleIngredient: (name: string) => void;
@@ -15,7 +18,10 @@ interface RecipeViewProps {
 export default function RecipeView({
   baseRecipe,
   scaleFactor,
-  onIngredientChange,
+  onScaleChange,
+  unitOverrides,
+  onUnitChange,
+  onReset,
   checkedIngredients,
   checkedInstructions,
   onToggleIngredient,
@@ -26,7 +32,10 @@ export default function RecipeView({
       <IngredientList
         baseIngredients={baseRecipe.ingredients}
         scaleFactor={scaleFactor}
-        onIngredientChange={onIngredientChange}
+        onScaleChange={onScaleChange}
+        unitOverrides={unitOverrides}
+        onUnitChange={onUnitChange}
+        onReset={onReset}
         checkedIngredients={checkedIngredients}
         onToggleIngredient={onToggleIngredient}
       />
