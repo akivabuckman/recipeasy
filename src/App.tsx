@@ -21,8 +21,8 @@ export default function App() {
   } = useRecipe();
 
   return (
-    <div className="min-h-screen bg-white text-zinc-900 dark:bg-zinc-900 dark:text-white">
-      <div className="max-w-3xl mx-auto px-4 py-24">
+    <div className="min-h-screen bg-white text-zinc-900 dark:bg-zinc-900 dark:text-white flex flex-col">
+      <div className="max-w-3xl w-full mx-auto px-4 py-24 flex-1">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">
             <span className="bg-gradient-to-r from-green-500 to-emerald-400 bg-clip-text text-transparent">Recipeasy</span>
@@ -77,7 +77,7 @@ export default function App() {
           />
         )}
       </div>
-      <footer className="fixed bottom-0 left-0 right-0 text-center text-zinc-200 text-xs py-2 px-4 bg-gradient-to-r from-blue-900 via-orange-900 to-blue-900 border-t border-zinc-600 select-none pointer-events-none tracking-wide">
+      <footer className="text-center text-zinc-200 text-xs py-2 px-4 bg-gradient-to-r from-blue-900 via-orange-900 to-blue-900 border-t border-zinc-600 select-none pointer-events-none tracking-wide">
         Everything here was made by yours truly — frontend, backend, CI, and AWS. See more projects at{' '}
         <a
           href="https://akivabuckman.com"
