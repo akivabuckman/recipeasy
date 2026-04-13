@@ -36,7 +36,7 @@ Return ONLY a valid JSON object — no markdown, no backticks, no explanation.
 The JSON must match this exact shape:
 {
   "ingredients": {
-    "<ingredient name, lowercase, singular>": {
+    "<ingredient name, exactly as written on the page, lowercase>": {
       "unit": "<unit string, e.g. 'cup', 'tbsp', 'g', 'oz', 'clove', 'pinch', 'whole'> OR null if no unit",
       "count": <number (integer or decimal) OR null if no count>
     }
@@ -49,7 +49,7 @@ The JSON must match this exact shape:
 }
 
 Rules:
-- ingredient keys must be lowercase, singular, trimmed strings (e.g. "garlic clove", "olive oil", "egg")
+- ingredient keys must be the full ingredient description exactly as written on the page, lowercased and trimmed — do NOT simplify, strip descriptors, or remove preparation notes (e.g. "red or yellow onion, sliced (not too thin)" stays as-is)
 - unit must be a lowercase string or null — NEVER an empty string
 - count must be a number or null — NEVER a string
 - instructions must be an array of non-empty strings, one per step

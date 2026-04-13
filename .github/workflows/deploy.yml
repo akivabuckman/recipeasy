@@ -51,6 +51,15 @@ jobs:
         run: |
           docker push ${{ vars.ECR_REGISTRY }}/recipeasy:$GIT_SHA
 
+      - name: Deploy Lambda function
+        run: |
+          cd lambda
+          zip function.zip lambda_function.py
+          aws lambda update-function-code \
+            --function-name recipe-scraper \
+            --zip-file fileb://function.zip \
+            --region ap-southeast-1
+
       - name: Clean up Docker resources on EC2
         uses: appleboy/ssh-action@v0.1.9
         with:

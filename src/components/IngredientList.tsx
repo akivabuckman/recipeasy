@@ -88,8 +88,8 @@ function IngredientRow({
               type="number"
               value={inputValue}
               onChange={handleCountChange}
-              onClick={(e) => e.stopPropagation()}
-              onFocus={() => { isFocusedRef.current = true; }}
+              onClick={(e) => { e.stopPropagation(); (e.target as HTMLInputElement).select(); }}
+              onFocus={(e) => { isFocusedRef.current = true; e.target.select(); }}
               onBlur={() => { isFocusedRef.current = false; }}
               min={0}
               step="any"
