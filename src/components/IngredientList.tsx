@@ -90,18 +90,10 @@ function IngredientRow({
               onChange={handleCountChange}
               onClick={(e) => { e.stopPropagation(); (e.target as HTMLInputElement).select(); }}
               onFocus={(e) => { isFocusedRef.current = true; e.target.select(); }}
-              onBlur={() => {
-        isFocusedRef.current = false;
-        const viewport = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
-        if (viewport) {
-          const original = viewport.getAttribute('content') ?? '';
-          viewport.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1');
-          setTimeout(() => viewport.setAttribute('content', original), 50);
-        }
-      }}
+              onBlur={() => { isFocusedRef.current = false; }}
               min={0}
               step="any"
-              className="w-full bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded px-2 py-1 text-sm text-right text-zinc-900 dark:text-white focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-500"
+              className="w-full bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded px-2 py-1 text-base text-right text-zinc-900 dark:text-white focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-500"
             />
           )}
         </div>
