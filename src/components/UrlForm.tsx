@@ -9,7 +9,7 @@ interface UrlFormProps {
 }
 
 function isValidUrl(val: string): boolean {
-  if (!val.trim() || /\s/.test(val)) return false;
+  if (!val.trim() || /\s/.test(val) || val.trimEnd().endsWith('.')) return false;
   const toTest = /^https?:\/\//i.test(val) ? val : `https://${val}`;
   try {
     return new URL(toTest).hostname.includes('.');
@@ -58,7 +58,7 @@ export default function UrlForm({ url, onUrlChange, onSubmit, loading, submitted
       )}
       <button
         onClick={handleSubmit}
-        disabled={loading || submitted}
+        disabled={loading || submitted || !isValidUrl(url)}
         className="w-full py-2.5 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
         {loading ? '✨ Doing AI stuff...' : 'Go! 🚀'}
